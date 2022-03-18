@@ -1,9 +1,5 @@
 #include<stdio.h>
-#include <stdlib.h>
-//處理動態陣列(malloc)
-// ((1+2)*5+(1+7+11))%5-11=
-// let '-'=-1, '+'=1 ,'*'=2 ,'/'=-2, '('=-3, ')'=3;
-#define int long long int
+#define int long long
 int char_to_int(char a){
     if(a=='-') return -1;
     else if(a=='+') return 1;
@@ -43,10 +39,6 @@ formula infix_to_postfix(STR s){
     int negative=0;
     int is_number=0;
     for(int i=0;i<s.len-1;i++){
-        if(s.c[i]=='-' && is_number==0){
-            negative=1;
-            continue;
-        }
         num = s.c[i]-'0';
         if(num>=0 && num<=9){
             //printf("haha\n");
@@ -146,7 +138,12 @@ int cal(formula ans){
                 st[ptr] = a*b;
             }
             else if(op=='/'){
-                st[ptr] = a/b;
+                int c = a/b;
+                if(c<=0 && c*b>a){
+                    c=c-1;
+                }
+                //printf("%d %d",a,b);
+                st[ptr] = c;
             }
             else if(op=='%'){
                 st[ptr] = a%b;
@@ -157,7 +154,7 @@ int cal(formula ans){
     //printf("result=%d\n",st[ptr]);
     return st[ptr];
 }
-int main(){
+signed main(){
     STR s;
     formula ans;
     //printf("%d\n",1+6/3%4);
