@@ -4,8 +4,9 @@
 // let '-'=-1, '+'=1 ,'*'=2 ,'/'=-2, '('=-3, ')'=3;
 #define int long long
 int priority(char a){
-    if(a=='+' || a=='-') return -1;
-    else return 1;
+    if(a=='+' || a=='-') return 1;
+    else if(a=='*' || a=='/' || a=='%') return 2;
+    else return 0;
 }
 typedef struct element{
     int is_op;
@@ -20,14 +21,13 @@ void inToPostfix(char* s,math* ans,int len,int k){
     int opp=-1;
     int negative=0;
     int is_number=0;
-
     for(int i=0;i<len;i++){
         num = s[i]-'0';
         if(num>=0 && num<=9){
             is_number=1;
             sum*=10;
-            if(negative==1) sum-=num;
-            else sum+=num;
+            //if(negative==1) sum-=num;
+            sum+=num;
         }
         else{
             if(is_number==1){
@@ -45,7 +45,7 @@ void inToPostfix(char* s,math* ans,int len,int k){
             else{
                 top = op[opp];
                 if(cur==')'){//')'
-                    while(top!='(' && opp>=0){
+                    while(top!='('){
                         ans[k].is_op=1;
                         ans[k].opt=top;
                         k++;
@@ -53,16 +53,14 @@ void inToPostfix(char* s,math* ans,int len,int k){
                         if(opp==-1) break;
                         top = op[opp];
                     }
-                    if(top=='('){
-                        opp--;
-                    }
+                    opp--;
                 }
                 else if(cur=='('){
                     opp++;
                     op[opp]=cur;
                 }
                 else{
-                    while(priority(top)>=priority(cur) && opp>=0 && top!='('){
+                    while(priority(top)>=priority(cur)){
                         ans[k].is_op=1;
                         ans[k].opt=top;
                         k++;
@@ -90,6 +88,7 @@ void inToPostfix(char* s,math* ans,int len,int k){
         k++;
     }
     ans[k].is_op=-1;
+    //printf("k=%d\n",k);
     free(op);
 }
 int cal(math* ans,int len){
